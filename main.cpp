@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <stdbool.h>
-#include "include/SDL2/SDL.h"
+#include <SDL2/SDL.h>
 int mWidth =640;
 int mHeight= 200;
 const int SIZE =100;
