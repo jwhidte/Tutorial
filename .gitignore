@@ -2,6 +2,6 @@
 /SDL2.dll
 /test.exe
 Tutorial.code-workspace
-/*.exe
-main.exe
+**/*.exe
+/main.exe
 *.exe
