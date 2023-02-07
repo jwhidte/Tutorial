@@ -9,40 +9,59 @@ const int SPEED= 600;
 const int GRAVITY =60;
 const int FPS = 60;
 const int JUMP = -1200;
-
+int throw_sdl_err(const char* fmt)
+{
+    SDL_LogError(
+        SDL_LOG_CATEGORY_APPLICATION,
+        fmt,
+        SDL_GetError()
+    );
+    return 3; // constant error code.
+}
 int main(int argc, char* argv[])
 {
+  SDL_Window*     window;
+  SDL_Renderer*   renderer;
+  SDL_Surface*    surface;
+  SDL_Texture*    texture;
+  SDL_Event       event;
 	/* Initializes the timer, audio, video, joystick,
   haptic, gamecontroller and events subsystems */
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
   {
-    printf("Error initializing SDL: %s\n", SDL_GetError());
-    return 0;
+    return throw_sdl_err("Error initializing SDL: %s\n");
   }
   /* Create a window */
-  SDL_Window* window = SDL_CreateWindow("Hello Platformer!",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,mWidth, mHeight, SDL_WINDOW_RESIZABLE);
+  window = SDL_CreateWindow("Hello Platformer!",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,mWidth, mHeight, SDL_WINDOW_RESIZABLE);
   if (!window)
   {
-    printf("Error creating window: %s\n", SDL_GetError());
     SDL_Quit();
-    return 0;
+    return throw_sdl_err("Error creating window: %s\n");
+    SDL_Quit();
   }
   /* Create a renderer */
   Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-  SDL_Renderer* rend = SDL_CreateRenderer(window, -1, render_flags);
-  if (!rend)
+  renderer = SDL_CreateRenderer(window, -1, render_flags);
+  if (!renderer)
   {
-    printf("Error creating renderer: %s\n", SDL_GetError());
     SDL_DestroyWindow(window);
     SDL_Quit();
-    return 0;
+    return throw_sdl_err("Error creating renderer: %s\n");
   }
   /* Main loop */
   bool running = true, jump_pressed = false, can_jump = true,
                   left_pressed = false, right_pressed = false;
   float x_pos = (mWidth-SIZE)/2, y_pos = (mHeight-SIZE)/2, x_vel = 0, y_vel = 0;
   SDL_Rect rect = {(int) x_pos, (int) y_pos, SIZE, SIZE};
-  SDL_Event event;
+  surface = SDL_LoadBMP("MyMan.bmp");
+  if (!surface) {
+      return throw_sdl_err("Could not load BMP image: %s");
+  }
+  texture = SDL_CreateTextureFromSurface(renderer, surface);
+  if (!texture) {
+      return throw_sdl_err("Could not create new texture from surface: %s");
+  }
+  SDL_FreeSurface(surface);
   while (running)
   {
     /* Process events */
@@ -102,8 +121,8 @@ int main(int argc, char* argv[])
       }
     }
     /* Clear screen */
-    SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
-    SDL_RenderClear(rend);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
     /* Move the rectangle */
     x_vel = (right_pressed - left_pressed)*SPEED;
     y_vel += GRAVITY;
@@ -130,14 +149,13 @@ int main(int argc, char* argv[])
     rect.x = (int) x_pos;
     rect.y = (int) y_pos;
     /* Draw the rectangle */
-    SDL_SetRenderDrawColor(rend, 255, 0, 0, 255);
-    SDL_RenderFillRect(rend, &rect);
+    SDL_RenderCopy(renderer, texture, NULL, &rect);
     /* Draw to window and loop */
-    SDL_RenderPresent(rend);
+    SDL_RenderPresent(renderer);
     SDL_Delay(1000/FPS);
   }
   /* Release resources */
-  SDL_DestroyRenderer(rend);
+  SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
   SDL_Quit();
   return 0;
