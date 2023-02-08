@@ -4,7 +4,9 @@
             "name": "Win64",
             "includePath": [
                 "${workspaceFolder}/**",
-                "C:\\Developement\\include"
+                "C:/Developement/include",
+                "C:/Developement/include/**",
+                "C:/Developement/include/SDL2"
             ],
             "defines": [
                 "_DEBUG",

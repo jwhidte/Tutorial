@@ -14,6 +14,7 @@
                 "-Wall",
                 "-lSDL2main",
                 "-lSDL2",
+                "-lSDL2_mixer",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
             ],
