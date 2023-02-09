@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <iostream>
 #include <stdbool.h>
+#include <time.h>
+#include <vector>
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_tff.h>
+
 int mWidth =640;
 int mHeight= 200;
 int SIZEX = 100;
@@ -139,8 +144,8 @@ int main(int argc, char* argv[])
               rect.w -= 1;
               break;
             case SDL_SCANCODE_X:
-              SIZEY -= 1;
-              rect.h -= 1;
+              SIZEX += 1;
+              rect.w += 1;
               break;
             default:
               break;

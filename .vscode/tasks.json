@@ -15,6 +15,7 @@
                 "-lSDL2main",
                 "-lSDL2",
                 "-lSDL2_mixer",
+                "-lSDL2_tff",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
             ],
