@@ -6,7 +6,8 @@
                 "${workspaceFolder}/**",
                 "C:/Developement/include",
                 "C:/Developement/include/**",
-                "C:/Developement/include/SDL2"
+                "C:/Developement/include/SDL2",
+                "C:/Developement/include/SDL2/**"
             ],
             "defines": [
                 "_DEBUG",

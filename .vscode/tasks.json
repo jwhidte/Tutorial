@@ -15,12 +15,13 @@
                 "-lSDL2main",
                 "-lSDL2",
                 "-lSDL2_mixer",
-                "-lSDL2_tff",
+                "-lSDL2_ttf",
+                "-lSDL2_image",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
             ],
             "options": {
-                "cwd": "C:/mingw64/bin"
+                "cwd" : "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$gcc"
