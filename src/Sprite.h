@@ -2,12 +2,6 @@
 
 #include "Game.h"
 
-const int SPEED= 600;
-const int GRAVITY =2000;
-const int FPS = 60;
-const int JUMP = -1600;
-const int TILE_SIZE = 128;
-
 class Sprite
 {
     private:
