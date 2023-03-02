@@ -4,7 +4,7 @@
 
 class Sprite
 {
-    private:
+private:
 
     SDL_Rect rect;
     int SIZEX, SIZEY;
@@ -12,9 +12,8 @@ class Sprite
     bool running = true, jump_pressed = false, can_jump = true, left_pressed = false, right_pressed = false;
 
 public:
-
-    Sprite(float x, float y, int sizex, int sizey);
-    ~Sprite();
+    Sprite(float x, float y, int sizex, int sizey)
+    ~Sprite()
     void handleEvent(SDL_Event &event);
     void update();
     void render(SDL_Renderer *renderer);

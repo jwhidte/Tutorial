@@ -5,7 +5,7 @@ Sprite::Sprite(x, y, sizex, sizey){
     this->y_pos = y;
     this->SIZEX = sizex;
     this->SIZEY = sizey;
-    rect = {(int) x_pos, (int) y_pos, SIZEX, SIZEY}
+    rect = {(int) x_pos, (int) y_pos, SIZEX, SIZEY};
 }
 void Sprite::handleEvent(&event){
     if (event.type == SDL_KEYDOWN){
@@ -68,18 +68,18 @@ void Sprite::update(){
     y_vel += GRAVITY/FPS;
     x_ppos = x_pos + x_vel/60;
     y_ppos = y_pos + y_vel/60;
-    for (int y = 0; y < tilemap.size(); y++)
+    for (int y = 0; y < Game::tilemap.size(); y++)
     {
-      for (int x = 0; x < tilemap[y].size(); x++)
+      for (int x = 0; x < Game::tilemap[y].size(); x++)
       {
         if(x_vel>0){
-          if (tilemap[y][x] == 1 && right + x_vel/60 > x * TILE_SIZE && right <= x * TILE_SIZE && bottom > y * TILE_SIZE && top < y * TILE_SIZE + TILE_SIZE)
+          if (Game::tilemap[y][x] == 1 && right + x_vel/60 > x * TILE_SIZE && right <= x * TILE_SIZE && bottom > y * TILE_SIZE && top < y * TILE_SIZE + TILE_SIZE)
           {
             x_ppos = x * TILE_SIZE - SIZEX;
           }
         }
         else if(x_vel<0){
-          if (tilemap[y][x] == 1 && left + x_vel/60 < x * TILE_SIZE + TILE_SIZE && left >= x * TILE_SIZE + TILE_SIZE && bottom > y * TILE_SIZE && top < y * TILE_SIZE + TILE_SIZE)
+          if (Game::tilemap[y][x] == 1 && left + x_vel/60 < x * TILE_SIZE + TILE_SIZE && left >= x * TILE_SIZE + TILE_SIZE && bottom > y * TILE_SIZE && top < y * TILE_SIZE + TILE_SIZE)
           {
             x_ppos = x * TILE_SIZE + TILE_SIZE;
           }
@@ -87,19 +87,19 @@ void Sprite::update(){
       }
     }
     x_pos = x_ppos;
-    for (int y = 0; y < tilemap.size(); y++)
+    for (int y = 0; y < Game::tilemap.size(); y++)
     {
-      for (int x = 0; x < tilemap[y].size(); x++)
+      for (int x = 0; x < Game::tilemap[y].size(); x++)
       {
         if(y_vel>0){
-          if (tilemap[y][x] == 1 && bottom + y_vel/60 > y * TILE_SIZE && bottom <= y * TILE_SIZE && right > x * TILE_SIZE && left < x * TILE_SIZE + TILE_SIZE)
+          if (Game::tilemap[y][x] == 1 && bottom + y_vel/60 > y * TILE_SIZE && bottom <= y * TILE_SIZE && right > x * TILE_SIZE && left < x * TILE_SIZE + TILE_SIZE)
           {
             y_ppos = y * TILE_SIZE - SIZEY;
             can_jump = true;
           }
         }
         else if(y_vel<0){
-          if (tilemap[y][x] == 1 && top + y_vel/60 < y * TILE_SIZE + TILE_SIZE && top >= y * TILE_SIZE + TILE_SIZE && right > x * TILE_SIZE && left < x * TILE_SIZE + TILE_SIZE)
+          if (Game::tilemap[y][x] == 1 && top + y_vel/60 < y * TILE_SIZE + TILE_SIZE && top >= y * TILE_SIZE + TILE_SIZE && right > x * TILE_SIZE && left < x * TILE_SIZE + TILE_SIZE)
           {
             y_ppos = y * TILE_SIZE + TILE_SIZE;
           }
@@ -109,14 +109,14 @@ void Sprite::update(){
     y_pos = y_ppos;
     if (x_pos <= 0)
       x_pos = 0;
-    if (x_pos >= mWidth - rect.w)
-      x_pos = mWidth - rect.w;
+    if (x_pos >= Game::mWidth - rect.w)
+      x_pos = Game::mWidth - rect.w;
     if (y_pos <= 0)
       y_pos = 0;
-    if (y_pos >= mHeight - rect.h)
+    if (y_pos >= Game::mHeight - rect.h)
     {
       y_vel = 0;
-      y_pos = mHeight - rect.h;
+      y_pos = Game::mHeight - rect.h;
       if(!can_jump){
 				Mix_PlayChannel( -1, sound, 0 );
       }

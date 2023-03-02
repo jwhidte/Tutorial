@@ -3,18 +3,18 @@
 #include "Sprite.h"
 using std::vector;
 
-int mWidth =640;
-int mHeight= 200;
+int mWidth = 640, mHeight = 200;
 int SIZEX = 64, SIZEY = 64;
 
 //SDL Variables
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
 
-bool Game::running = false;
+vector<vector<int>> Game::tilemap;
 
+bool Game::running = false;
+Media Game::media;
 // Tilemap variables
-vector<vector<int>> tilemap;
 int mapWidth, mapHeight;
 
 Game::Game()
@@ -22,6 +22,15 @@ Game::Game()
 
 Game::~Game()
 {}
+
+void Game::throw_sdl_err(const char* fmt)
+{
+    SDL_LogError(
+        SDL_LOG_CATEGORY_APPLICATION,
+        fmt,
+        SDL_GetError()
+    );
+}
 
 void Game::init(const char* title, int width, int height, bool fullscreen)
 {
@@ -32,16 +41,11 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     }
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
     {
-        window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
-        if (window)
-        {
-            std::cout << "Window created!" << std::endl;
-        }
+        window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
         renderer = SDL_CreateRenderer(window, -1, 0);
         if (renderer)
         {
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-            std::cout << "Renderer created!" << std::endl;
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         }
         running = true;
     }
@@ -49,15 +53,18 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     {
         running = false;
     }
-    Media media;
-    tileTexture = media.loadTexture("assets/tileset.png");
-    texture1 = media.loadTexture("assets/texture1.png");
-    texture2 = media.loadTexture("assets/texture2.png");
-    sound = Mix_LoadWAV("assets/sound.wav");
-    loadMap("assets/map.txt");
-    player = new Sprite(0, 0, SIZEX, SIZEY);
+	if (Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 1024 ) < 0 ) 
+    {
+		std::cout << "Error initializing SDL_mixer: " << Mix_GetError() << std::endl;
+	}
+    if (!IMG_Init(IMG_INIT_PNG))
+    {
+        std::cout << "Error initializing SDL_IMG: " << IMG_GetError() << std::endl;
+    }
+
+    media.addTexture("tile","images/tile.png");
+    media.addTexture("face1","images/Face1.png");
+    media.addTexture("face2","images/Face2.png");
+    media.addSound("ding","sounds/DING.mp3");
+    tilemap = media.loadTilemap("images/map.txt");
 }
-SDL_Texture* tileTexture = nullptr;
-SDL_Texture*    texture1 = nullptr;
-SDL_Texture*    texture2 = nullptr;
-Mix_Chunk*         sound = nullptr;

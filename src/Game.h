@@ -12,6 +12,9 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 
+class Media;
+class Sprite;
+
 const int SPEED= 600;
 const int GRAVITY =2000;
 const int FPS = 60;
@@ -24,12 +27,16 @@ public:
     Game();
     ~Game();
 
-    void init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen);
+    void init(const char* title, int width, int height, bool fullscreen);
+    void throw_sdl_err(const char* fmt);
 
     static SDL_Renderer *renderer;
     static SDL_Event event;
     static bool running;
+    static Media media;
+    static std::vector<std::vector<int>> tilemap;
     static int mWidth, mHeight;
+
 private:
     SDL_Window *window;
     
