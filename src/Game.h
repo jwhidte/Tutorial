@@ -30,6 +30,12 @@ public:
     void init(const char* title, int width, int height, bool fullscreen);
     void throw_sdl_err(const char* fmt);
 
+    void handleEvents();
+    void update();
+    void render();
+    void clean();
+    bool isRunning() { return running; }
+
     static SDL_Renderer *renderer;
     static SDL_Event event;
     static bool running;

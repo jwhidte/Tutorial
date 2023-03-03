@@ -3,12 +3,13 @@
 #include "Sprite.h"
 using std::vector;
 
-int mWidth = 640, mHeight = 200;
+int Game::mWidth = 640, Game::mHeight = 200;
 int SIZEX = 64, SIZEY = 64;
 
 //SDL Variables
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
+Sprite player = Sprite(0, 0, 64, 64);
 
 vector<vector<int>> Game::tilemap;
 
@@ -62,9 +63,46 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
         std::cout << "Error initializing SDL_IMG: " << IMG_GetError() << std::endl;
     }
 
-    media.addTexture("tile","images/tile.png");
-    media.addTexture("face1","images/Face1.png");
-    media.addTexture("face2","images/Face2.png");
-    media.addSound("ding","sounds/DING.mp3");
-    tilemap = media.loadTilemap("images/map.txt");
+    Game::media.addTexture("tile","images/tile.png");
+    Game::media.addTexture("face1","images/Face1.png");
+    Game::media.addTexture("face2","images/Face2.png");
+    Game::media.addSound("ding","sounds/DING.mp3");
+    Game::tilemap = media.loadTilemap("images/map.txt");
+}
+void Game::handleEvents()
+{
+    SDL_PollEvent(&Game::event);
+    switch (Game::event.type)
+    {
+        case SDL_QUIT:
+            Game::running = false;
+            break;
+    case SDL_KEYDOWN:
+        switch (Game::event.key.keysym.sym)
+        {
+        case SDLK_ESCAPE:
+            Game::running = false;
+            break;
+        }
+        break;
+    }
+    player.handleEvents();
+}
+void Game::update()
+{
+    player.update();
+
+}
+void Game::render()
+{
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    player.render();
+    SDL_RenderPresent(Game::renderer);
+}
+void Game::clean()
+{
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+    SDL_Quit();
 }

@@ -1,15 +1,20 @@
 #include "Sprite.h"
 
-Sprite::Sprite(x, y, sizex, sizey){
+Sprite::Sprite(float x, float y, int sizex, int sizey) {
     this->x_pos = x;
     this->y_pos = y;
     this->SIZEX = sizex;
     this->SIZEY = sizey;
+    sound1 = Game::media.getSound("ding");
+    face1 = Game::media.getTexture("face1");
+    face2 = Game::media.getTexture("face2");
     rect = {(int) x_pos, (int) y_pos, SIZEX, SIZEY};
 }
-void Sprite::handleEvent(&event){
-    if (event.type == SDL_KEYDOWN){
-        switch (event.key.keysym.scancode){
+Sprite::~Sprite()
+{}
+void Sprite::handleEvents(){
+    if (Game::event.type == SDL_KEYDOWN){
+        switch (Game::event.key.keysym.scancode){
             case SDL_SCANCODE_SPACE:
                 jump_pressed = true;
                 break;
@@ -33,8 +38,8 @@ void Sprite::handleEvent(&event){
                 break;
         }
     }
-    if (event.type == SDL_KEYUP){
-        switch (event.key.keysym.scancode){
+    if (Game::event.type == SDL_KEYUP){
+        switch (Game::event.key.keysym.scancode){
             case SDL_SCANCODE_SPACE:
                 jump_pressed = false;
                 break;
@@ -118,10 +123,18 @@ void Sprite::update(){
       y_vel = 0;
       y_pos = Game::mHeight - rect.h;
       if(!can_jump){
-				Mix_PlayChannel( -1, sound, 0 );
+				Mix_PlayChannel( -1, sound1, 0 );
       }
       can_jump = true;
     }
     rect.x = (int) x_pos;
     rect.y = (int) y_pos;
+}
+void Sprite::render(){
+    if (can_jump){
+      SDL_RenderCopy(Game::renderer, face1, NULL, &rect);
+    }
+    if (!can_jump){
+      SDL_RenderCopy(Game::renderer, face2, NULL, &rect);
+    };
 }

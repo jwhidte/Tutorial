@@ -1,5 +1,9 @@
 #include "Media.h"
+Media::Media()
+{}
 
+Media::~Media()
+{}
 SDL_Texture* Media::loadTexture(const char* source){
     SDL_Surface* temporarySurface = IMG_Load(source);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::renderer, temporarySurface);
@@ -26,7 +30,7 @@ void Media::clear(){
     textures.clear();
     sounds.clear();
 }
-std::vector<std::vector<int>> loadTilemap(const char* fileName){
+std::vector<std::vector<int>> Media::loadTilemap(const char* fileName){
     std::vector<std::vector<int>> tilemap;
     int mapWidth, mapHeight;
     FILE* fp = fopen(fileName, "r");
