@@ -12,6 +12,7 @@ SDL_Texture* Media::loadTexture(const char* source){
 }
 Mix_Chunk* Media::loadSound(const char* source){
     Mix_Chunk* sound = Mix_LoadWAV(source);
+    sound = Mix_LoadWAV("sounds/DING.mp3");
     return sound;
 }
 void Media::addTexture(std::string id, const char* source){

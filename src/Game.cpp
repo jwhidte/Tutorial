@@ -9,7 +9,7 @@ int SIZEX = 64, SIZEY = 64;
 //SDL Variables
 SDL_Renderer* Game::renderer = nullptr;
 SDL_Event Game::event;
-Sprite player = Sprite(0, 0, 64, 64);
+Sprite player = Sprite(100, 100, 64, 64);
 
 vector<vector<int>> Game::tilemap;
 
@@ -66,7 +66,6 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     Game::media.addTexture("tile","images/tile.png");
     Game::media.addTexture("face1","images/Face1.png");
     Game::media.addTexture("face2","images/Face2.png");
-    Game::media.addSound("ding","sounds/DING.mp3");
     Game::tilemap = media.loadTilemap("images/map.txt");
 }
 void Game::handleEvents()
@@ -99,6 +98,7 @@ void Game::render()
     SDL_RenderClear(renderer);
     player.render();
     SDL_RenderPresent(Game::renderer);
+    SDL_Delay(1000/FPS);
 }
 void Game::clean()
 {

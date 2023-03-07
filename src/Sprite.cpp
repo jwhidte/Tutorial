@@ -1,14 +1,14 @@
 #include "Sprite.h"
 
-Sprite::Sprite(float x, float y, int sizex, int sizey) {
-    this->x_pos = x;
-    this->y_pos = y;
-    this->SIZEX = sizex;
-    this->SIZEY = sizey;
-    sound1 = Game::media.getSound("ding");
-    face1 = Game::media.getTexture("face1");
-    face2 = Game::media.getTexture("face2");
-    rect = {(int) x_pos, (int) y_pos, SIZEX, SIZEY};
+Sprite::Sprite(float x, float y, int sizex, int sizey):
+image1(Game::media.loadTexture("images/Face1.png")),
+image2(Game::media.loadTexture("images/Face2.png"))
+{
+  this->x_pos = x;
+  this->y_pos = y;
+  this->SIZEX = sizex;
+  this->SIZEY = sizey;
+  rect = {(int) x_pos, (int) y_pos, SIZEX, SIZEY};
 }
 Sprite::~Sprite()
 {}
@@ -122,9 +122,9 @@ void Sprite::update(){
     {
       y_vel = 0;
       y_pos = Game::mHeight - rect.h;
-      if(!can_jump){
-				Mix_PlayChannel( -1, sound1, 0 );
-      }
+      // if(!can_jump){
+			// 	Mix_PlayChannel( -1, chunk1, 0 );
+      // }
       can_jump = true;
     }
     rect.x = (int) x_pos;
@@ -132,9 +132,9 @@ void Sprite::update(){
 }
 void Sprite::render(){
     if (can_jump){
-      SDL_RenderCopy(Game::renderer, face1, NULL, &rect);
+      SDL_RenderCopy(Game::renderer, image1, NULL, &rect);
     }
     if (!can_jump){
-      SDL_RenderCopy(Game::renderer, face2, NULL, &rect);
+      SDL_RenderCopy(Game::renderer, image2, NULL, &rect);
     };
 }
