@@ -1,11 +1,13 @@
 #include "Sprite.h"
 
-Sprite::Sprite(float x, float y, int sizex, int sizey):
-image1(Game::media.loadTexture("images/Face1.png")),
-image2(Game::media.loadTexture("images/Face2.png"))
+Sprite::Sprite(float x, float y, int sizex, int sizey)
 {
   this->x_pos = x;
   this->y_pos = y;
+  float x_ppos = x_pos;
+  float y_ppos = y_pos;
+  this->image1 = Game::media.loadTexture("images/Face1.png");
+  this->image2 = Game::media.loadTexture("images/Face2.png");
   this->SIZEX = sizex;
   this->SIZEY = sizey;
   rect = {(int) x_pos, (int) y_pos, SIZEX, SIZEY};
@@ -129,6 +131,7 @@ void Sprite::update(){
     }
     rect.x = (int) x_pos;
     rect.y = (int) y_pos;
+    printf("b");
 }
 void Sprite::render(){
     if (can_jump){

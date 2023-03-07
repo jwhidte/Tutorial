@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
 
     while (game->isRunning())
     {
+        fflush(stdout);
         game->handleEvents();
         game->update();
         game->render();

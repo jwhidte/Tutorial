@@ -4,7 +4,7 @@
 
 # Compiler settings - Can be customized.
 CC = g++
-CXXFLAGS = -std=c++17 -Wall -mwindows -g -IC:\\Developement\\include -LC:\\Developement\\lib
+CXXFLAGS = -std=c++17 -Wall -g -IC:\\Developement\\include -LC:\\Developement\\lib
 LDFLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 # Makefile settings - Can be customized.
