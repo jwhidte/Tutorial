@@ -2,14 +2,11 @@
 #include "Media.h"
 #include "Sprite.h"
 using std::vector;
-
+SDL_Event Game::event;
 int Game::mWidth = 640, Game::mHeight = 200;
 int SIZEX = 64, SIZEY = 64;
 
 //SDL Variables
-SDL_Renderer* Game::renderer = nullptr;
-SDL_Window*& Game::window = nullptr;
-SDL_Event Game::event;
 Sprite player = Sprite(100, 100, 64, 64);
 
 vector<vector<int>> Game::tilemap;
@@ -43,20 +40,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     }
     if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
     {
-        Game::window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
-        Game::renderer = SDL_CreateRenderer(Game::window, -1, 0);
-        if(!Game::window)
-        {
-            printf("epic window fail");
-        }
-        if (Game::renderer)
-        {
-            SDL_SetRenderDrawColor(Game::renderer, 0, 0, 0, 255);
-        }
-        else
-        {
-            printf("epic renderer fail");
-        }
+        window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
+        renderer = SDL_CreateRenderer(window, -1, 0);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         running = true;
     }
     else
@@ -72,10 +58,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     {
         std::cout << "Error initializing SDL_IMG: " << IMG_GetError() << std::endl;
     }
-
-    Game::media.addTexture("tile","images/tile.png");
-    Game::media.addTexture("face1","images/Face1.png");
-    Game::media.addTexture("face2","images/Face2.png");
+    Game::media.addTexture("tile","images/tile.png",renderer);
+    Game::media.addTexture("face1","images/Face1.png",renderer);
+    Game::media.addTexture("face2","images/Face2.png",renderer);
     Game::tilemap = media.loadTilemap("images/tilemap.txt");
 }
 void Game::handleEvents()
@@ -104,9 +89,9 @@ void Game::update()
 }
 void Game::render()
 {
-    SDL_SetRenderDrawColor(Game::renderer, 0, 0, 0, 255);
-    SDL_RenderClear(Game::renderer);
-    player.render();
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    player.render(renderer);
     for (int y = 0; y < mapHeight; y++)
     {
         for (int x = 0; x < mapWidth; x++)
@@ -114,17 +99,17 @@ void Game::render()
             if (tilemap[y][x] == 1)
             {
                 SDL_Rect tileRect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
-                SDL_RenderCopy(Game::renderer, Game::media.getTexture("tile"), nullptr, &tileRect);
+                SDL_RenderCopy(renderer, Game::media.getTexture("tile"), nullptr, &tileRect);
             }
         }
     }
-    SDL_RenderPresent(Game::renderer);
+    SDL_RenderPresent(renderer);
     SDL_Delay(1000/FPS);
 
 }
 void Game::clean()
 {
-    SDL_DestroyWindow(Game::window);
-    SDL_DestroyRenderer(Game::renderer);
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
     SDL_Quit();
 }

@@ -36,11 +36,12 @@ public:
     void clean();
     bool isRunning() { return running; }
 
-    static SDL_Renderer *renderer;
-    static SDL_Window *window;
     static SDL_Event event;
     static bool running;
     static Media media;
     static std::vector<std::vector<int>> tilemap;
     static int mWidth, mHeight; 
+private:
+    SDL_Window* window;
+    SDL_Renderer* renderer;
 };

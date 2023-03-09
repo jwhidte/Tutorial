@@ -10,7 +10,7 @@ public:
     ~Sprite();
     void handleEvents();
     void update();
-    void render();
+    void render(SDL_Renderer* renderer);
     void jump(bool jump);
 private:
     SDL_Rect rect;

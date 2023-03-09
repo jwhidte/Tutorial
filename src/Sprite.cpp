@@ -6,8 +6,8 @@ Sprite::Sprite(float x, float y, int sizex, int sizey)
   this->y_pos = y;
   float x_ppos = x_pos;
   float y_ppos = y_pos;
-  this->image1 = Game::media.loadTexture("images/Face1.png");
-  this->image2 = Game::media.loadTexture("images/Face2.png");
+  this->image1 = Game::media.getTexture("face1");
+  this->image2 = Game::media.getTexture("face2");
   this->SIZEX = sizex;
   this->SIZEY = sizey;
   rect = {(int) x_pos, (int) y_pos, SIZEX, SIZEY};
@@ -133,11 +133,11 @@ void Sprite::update(){
     rect.y = (int) y_pos;
     printf("b");
 }
-void Sprite::render(){
+void Sprite::render(SDL_Renderer* renderer){
     if (can_jump){
-      SDL_RenderCopy(Game::renderer, image1, NULL, &rect);
+      SDL_RenderCopy(renderer, image1, NULL, &rect);
     }
     if (!can_jump){
-      SDL_RenderCopy(Game::renderer, image2, NULL, &rect);
+      SDL_RenderCopy(renderer, image2, NULL, &rect);
     };
 }

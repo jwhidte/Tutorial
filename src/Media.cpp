@@ -4,9 +4,9 @@ Media::Media()
 
 Media::~Media()
 {}
-SDL_Texture* Media::loadTexture(const char* source){
+SDL_Texture* Media::loadTexture(const char* source,SDL_Renderer* renderer){
     SDL_Surface* temporarySurface = IMG_Load(source);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(Game::renderer, temporarySurface);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, temporarySurface);
     SDL_FreeSurface(temporarySurface);
     return texture;
 }
@@ -15,8 +15,8 @@ Mix_Chunk* Media::loadSound(const char* source){
     sound = Mix_LoadWAV("sounds/DING.mp3");
     return sound;
 }
-void Media::addTexture(std::string id, const char* source){
-    textures.emplace(id, Media::loadTexture(source));
+void Media::addTexture(std::string id, const char* source,SDL_Renderer* renderer){
+    textures.emplace(id, Media::loadTexture(source,renderer));
 }
 void Media::addSound(std::string id, const char* source){
     sounds.emplace(id, Media::loadSound(source));
