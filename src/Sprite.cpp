@@ -1,17 +1,21 @@
 #include "Sprite.h"
 
-Sprite::Sprite(float x, float y, int sizex, int sizey)
+Sprite::Sprite(float x, float y, int sizex, int sizey, SDL_Renderer* renderer)
 {
   this->x_pos = x;
+  this->renderer = renderer;
   this->y_pos = y;
-  float x_ppos = x_pos;
-  float y_ppos = y_pos;
-  this->image1 = Game::media.getTexture("face1");
-  this->image2 = Game::media.getTexture("face2");
+  this->image1 = Media::loadTexture("images/Face1rizz.png",renderer);
+  this->image2 = Media::loadTexture("images/Face2.png",renderer);
+  this->image3 = Media::loadTexture("images/Face3.png",renderer);
+  this->chunk1 = Media::loadSound("sounds/DING.mp3");
   this->SIZEX = sizex;
   this->SIZEY = sizey;
   rect = {(int) x_pos, (int) y_pos, SIZEX, SIZEY};
+  rect2 = {(int) x_ppos, (int) y_ppos, SIZEX, SIZEY};
 }
+Sprite::Sprite()
+{}
 Sprite::~Sprite()
 {}
 void Sprite::handleEvents(){
@@ -67,26 +71,28 @@ void Sprite::update(){
     top = y_pos;
     bottom = y_pos + SIZEY;
     x_vel = (right_pressed - left_pressed)*SPEED;
-    y_vel += GRAVITY/FPS;
+    y_vel += GRAVITY;
+    printf("%f     ",y_vel);
     if (jump_pressed && can_jump){
         y_vel = JUMP;
         can_jump = false;
     }
-    y_vel += GRAVITY/FPS;
-    x_ppos = x_pos + x_vel/60;
-    y_ppos = y_pos + y_vel/60;
+    x_ppos = x_pos + x_vel;
+    y_ppos = y_pos + y_vel;
+    rect2.x = x_ppos;
+    rect2.y = y_ppos;
     for (int y = 0; y < Game::tilemap.size(); y++)
     {
       for (int x = 0; x < Game::tilemap[y].size(); x++)
       {
         if(x_vel>0){
-          if (Game::tilemap[y][x] == 1 && right + x_vel/60 > x * TILE_SIZE && right <= x * TILE_SIZE && bottom > y * TILE_SIZE && top < y * TILE_SIZE + TILE_SIZE)
+          if (Game::tilemap[y][x] == 1 && right + x_vel > x * TILE_SIZE && right <= x * TILE_SIZE && bottom > y * TILE_SIZE && top < y * TILE_SIZE + TILE_SIZE)
           {
             x_ppos = x * TILE_SIZE - SIZEX;
           }
         }
         else if(x_vel<0){
-          if (Game::tilemap[y][x] == 1 && left + x_vel/60 < x * TILE_SIZE + TILE_SIZE && left >= x * TILE_SIZE + TILE_SIZE && bottom > y * TILE_SIZE && top < y * TILE_SIZE + TILE_SIZE)
+          if (Game::tilemap[y][x] == 1 && left + x_vel < x * TILE_SIZE + TILE_SIZE && left >= x * TILE_SIZE + TILE_SIZE && bottom > y * TILE_SIZE && top < y * TILE_SIZE + TILE_SIZE)
           {
             x_ppos = x * TILE_SIZE + TILE_SIZE;
           }
@@ -94,19 +100,25 @@ void Sprite::update(){
       }
     }
     x_pos = x_ppos;
+    left = x_pos;
+    right = x_pos + SIZEX;
     for (int y = 0; y < Game::tilemap.size(); y++)
     {
       for (int x = 0; x < Game::tilemap[y].size(); x++)
       {
         if(y_vel>0){
-          if (Game::tilemap[y][x] == 1 && bottom + y_vel/60 > y * TILE_SIZE && bottom <= y * TILE_SIZE && right > x * TILE_SIZE && left < x * TILE_SIZE + TILE_SIZE)
+          if (Game::tilemap[y][x] == 1 && bottom + y_vel > y * TILE_SIZE && bottom <= y * TILE_SIZE && right > x * TILE_SIZE && left < x * TILE_SIZE + TILE_SIZE)
           {
+            y_vel = 0;
             y_ppos = y * TILE_SIZE - SIZEY;
+            if(!can_jump){
+              Mix_PlayChannel( -1, chunk1, 0 );
+            }
             can_jump = true;
           }
         }
         else if(y_vel<0){
-          if (Game::tilemap[y][x] == 1 && top + y_vel/60 < y * TILE_SIZE + TILE_SIZE && top >= y * TILE_SIZE + TILE_SIZE && right > x * TILE_SIZE && left < x * TILE_SIZE + TILE_SIZE)
+          if (Game::tilemap[y][x] == 1 && top + y_vel < y * TILE_SIZE + TILE_SIZE && top >= y * TILE_SIZE + TILE_SIZE && right > x * TILE_SIZE && left < x * TILE_SIZE + TILE_SIZE)
           {
             y_ppos = y * TILE_SIZE + TILE_SIZE;
           }
@@ -116,22 +128,21 @@ void Sprite::update(){
     y_pos = y_ppos;
     if (x_pos <= 0)
       x_pos = 0;
-    if (x_pos >= Game::mWidth - rect.w)
-      x_pos = Game::mWidth - rect.w;
+    if (x_pos >= Game::mWidth - SIZEX)
+      x_pos = Game::mWidth - SIZEX;
     if (y_pos <= 0)
       y_pos = 0;
-    if (y_pos >= Game::mHeight - rect.h)
+    if (y_pos >= Game::mHeight - SIZEY)
     {
       y_vel = 0;
-      y_pos = Game::mHeight - rect.h;
-      // if(!can_jump){
-			// 	Mix_PlayChannel( -1, chunk1, 0 );
-      // }
+      y_pos = Game::mHeight - SIZEY;
+      if(!can_jump){
+				Mix_PlayChannel( -1, chunk1, 0 );
+      }
       can_jump = true;
     }
     rect.x = (int) x_pos;
     rect.y = (int) y_pos;
-    printf("b");
 }
 void Sprite::render(SDL_Renderer* renderer){
     if (can_jump){
@@ -141,3 +152,6 @@ void Sprite::render(SDL_Renderer* renderer){
       SDL_RenderCopy(renderer, image2, NULL, &rect);
     };
 }
+void Sprite::render2(SDL_Renderer* renderer){
+  SDL_RenderCopy(renderer, image3, NULL, &rect2);
+};

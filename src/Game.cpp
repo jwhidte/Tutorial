@@ -3,21 +3,18 @@
 #include "Sprite.h"
 using std::vector;
 SDL_Event Game::event;
-int Game::mWidth = 640, Game::mHeight = 200;
-int SIZEX = 64, SIZEY = 64;
+int Game::mWidth, Game::mHeight;
+Sprite* player = new Sprite();
 
 //SDL Variables
-Sprite player = Sprite(100, 100, 64, 64);
 
 vector<vector<int>> Game::tilemap;
+SDL_Texture* tile;
 
-bool Game::running = false;
-Media Game::media;
-// Tilemap variables
-int mapWidth, mapHeight = 20;
+
 
 Game::Game()
-{}
+{bool running = false;}
 
 Game::~Game()
 {}
@@ -33,6 +30,8 @@ void Game::throw_sdl_err(const char* fmt)
 
 void Game::init(const char* title, int width, int height, bool fullscreen)
 {
+    Game::mWidth = width;
+    Game::mHeight = height;
     int flags = 0;
     if (fullscreen)
     {
@@ -58,10 +57,9 @@ void Game::init(const char* title, int width, int height, bool fullscreen)
     {
         std::cout << "Error initializing SDL_IMG: " << IMG_GetError() << std::endl;
     }
-    Game::media.addTexture("tile","images/tile.png",renderer);
-    Game::media.addTexture("face1","images/Face1.png",renderer);
-    Game::media.addTexture("face2","images/Face2.png",renderer);
-    Game::tilemap = media.loadTilemap("images/tilemap.txt");
+    Game::tilemap = Media::loadTilemap("images/tilemap.txt");
+    tile = Media::loadTexture("images/tile.png",renderer);
+    player = new Sprite(100, 100, 64, 64,renderer);
 }
 void Game::handleEvents()
 {
@@ -71,27 +69,35 @@ void Game::handleEvents()
         case SDL_QUIT:
             Game::running = false;
             break;
-    case SDL_KEYDOWN:
-        switch (Game::event.key.keysym.sym)
-        {
-        case SDLK_ESCAPE:
-            Game::running = false;
+        case SDL_KEYDOWN:
+            switch (Game::event.key.keysym.sym)
+            {
+            case SDLK_ESCAPE:
+                Game::running = false;
+                break;
+            }
             break;
-        }
-        break;
+        case SDL_WINDOWEVENT:
+            if (event.window.event == SDL_WINDOWEVENT_RESIZED)
+            {
+                Game::mWidth = event.window.data1;
+                Game::mHeight = event.window.data2;
+                printf("GRAAAH");
+            }
+            break;
     }
-    player.handleEvents();
+    player->handleEvents();
 }
 void Game::update()
 {
-    player.update();
+    player->update();
 
 }
 void Game::render()
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
-    player.render(renderer);
+    player->render(renderer);
     for (int y = 0; y < mapHeight; y++)
     {
         for (int x = 0; x < mapWidth; x++)
@@ -99,10 +105,11 @@ void Game::render()
             if (tilemap[y][x] == 1)
             {
                 SDL_Rect tileRect = { x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE };
-                SDL_RenderCopy(renderer, Game::media.getTexture("tile"), nullptr, &tileRect);
+                SDL_RenderCopy(renderer, tile, nullptr, &tileRect);
             }
         }
     }
+    player->render2(renderer);
     SDL_RenderPresent(renderer);
     SDL_Delay(1000/FPS);
 
