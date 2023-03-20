@@ -17,6 +17,6 @@ int main(int argc, char *argv[])
     }
 
     game->clean();
-
+    printf("Gaaaaaaaaaah");
     return 0;
 }

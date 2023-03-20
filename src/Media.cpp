@@ -12,8 +12,11 @@ SDL_Texture* Media::loadTexture(const char* source,SDL_Renderer* renderer){
 }
 Mix_Chunk* Media::loadSound(const char* source){
     Mix_Chunk* sound = Mix_LoadWAV(source);
-    sound = Mix_LoadWAV("sounds/DING.mp3");
     return sound;
+}
+Mix_Music* Media::loadMusic(const char* source){
+    Mix_Music* tune = Mix_LoadMUS(source);
+    return tune;
 }
 std::vector<std::vector<int>> Media::loadTilemap(const char* fileName){
     std::vector<std::vector<int>> tilemap;
